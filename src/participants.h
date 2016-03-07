@@ -1,10 +1,13 @@
 #pragma once
 
-#include <atomic>
+#include <atomic> // for std::atomic, atomic_thread_fence
+
+#include "local_config.h" // for local_config
 
 struct participant {
     participant *next;
     std::atomic<size_t> active;
+    local_config conf;
 
     inline void enter();
     inline void exit();
