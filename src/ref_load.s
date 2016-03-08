@@ -15,14 +15,14 @@
 
 /*
  * This function performs a store to the value and returns a potentially
- * modified parent pointer. When this is called, the current parent value
+ * modified holder pointer. When this is called, the current holder value
  * is expected to be stored in RAX
  *
  * Params: (store_addr: Obj ** - RDI,
             new_val: Obj* - RSI,
-            parent_val: Obj* - RDX)
+            holder_val: Obj* - RDX)
  *
- * Returns: new_parent_val: Obj* - RAX
+ * Returns: new_holder_val: Obj* - RAX
  *
  * Some tricky calling conventions and dubious gcc manipulation
  * may allow us to elide the explicit store into rax and instead convince
@@ -31,7 +31,6 @@
  * optimizer breaking everything
  *
  */
-
 .globl ref_store
 .align 4
 ref_store:
@@ -55,14 +54,12 @@ ref_store_end:
 .align 4
 segv_in_ref_store:
   xor %rax, %rax
-  xor %rdx, %rdx
-  mov ref_store(%rip), %rsi
-  cmpq %rsi, %rdi
-  setae %dl
-  mov ref_store_end(%rip), %rsi
-  cmpq %rsi, %rdi
+  xor %rsi, %rsi
+  cmpq ref_store(%rip), %rdi
+  setae %sil
+  cmpq ref_store_end(%rip), %rdi
   setbe %al
-  and %rdx, %rax
+  and %rsi, %rax
   ret
 
 

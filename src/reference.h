@@ -5,28 +5,30 @@
 #include <utility>
 
 class Reference {
-    Object *obj;
+    Object * volatile obj;
     public:
-        Object *load(std::memory_order ord = std::memory_order_relaxed);
-        Object *store(Object * _obj);
+        Object *load();
+        void store(Object *nobj);
+        void store_repair(Object *nobj, Object*& parent);
 };
 
 extern "C" {
-// Calling convention is a bit different though!
-Object *ref_load(Object * store_addr, Object *new_val, Object *parent_val);
+Object *ref_store(Object *volatile *store_addr,
+                  Object *new_val,
+                  Object *parent_val);
 }
 
 static_assert(sizeof(Reference) == sizeof(Object *),
               "Reference class is bigger than an object pointer");
 
-inline Object *Reference::load(std::memory_order ord) {
-    return obj.load(ord)->redirect;
+inline Object *Reference::load() {
+    return obj->redirect;
 }
 
-inline void store(Object *nobj, Object*& parent) {
-    Object* rval;
-    // Maybe could be not volatile
-    // and enable some more optimizations (i.e. no mov from rax to rax)
-    // but GCC will almost certainly elide some writes...
-    asm volatile ("")
+inline void Reference::store(Object* nobj) {
+    ref_store(&obj, nobj, nullptr);
+}
+
+inline void Reference::store_repair(Object *nobj, Object*& holder) {
+    holder = ref_store(&obj, nobj, holder);
 }
