@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic> // for std::atomic, atomic_thread_fence
+#include <stddef.h>
 
 #include "local_config.h" // for local_config
 

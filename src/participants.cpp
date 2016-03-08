@@ -1,4 +1,5 @@
 #include "participants.h"
+#include <stddef.h>
 
 std::atomic<participant *> global_participants;
 std::atomic<size_t> n_participants;

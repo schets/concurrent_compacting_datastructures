@@ -9,4 +9,4 @@ class local_page_manager {
     std::atomic<size_t> npages;
 public:
     static page *alloc_page();
-}
+};

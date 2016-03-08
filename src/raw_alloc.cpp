@@ -9,10 +9,11 @@ extern "C" {
 #include "page.h"
 
 page *alloc_pages(size_t n) {
+    //thread safety soon...
     // lol @ security, there has to be a better way
-    int fd = shm_open("__MY_GC_DUMMY", O_RDWR | O_CREAT | O_EXCL);
-    page *main = mmap(nullptr, n * sizeof(page), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    page *sister = mmap(nullptr, n * sizeof(page), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    int fd = shm_open("__MY_GC_DUMMY", O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
+    page *main = (page *)mmap(nullptr, n * sizeof(page), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    page *sister = (page *)mmap(nullptr, n * sizeof(page), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     main->metadata.sister = sister;
     shm_unlink("__MY_GC_DUMMY");
     return main;
