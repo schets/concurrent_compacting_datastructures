@@ -1,6 +1,7 @@
 #include "local_page_manager.h"
 
 // This is atomic because the GC can insert pages at will!
+
 /* static */ page *local_page_manager::alloc_page() {
     thread_local static local_page_manager man;
     page *next;

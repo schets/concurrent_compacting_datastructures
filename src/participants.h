@@ -3,6 +3,8 @@
 #include <atomic> // for std::atomic, atomic_thread_fence
 #include <stddef.h>
 
+#include "global_gc.h"
+#include "gc_class_base.h"
 #include "local_config.h" // for local_config
 
 struct participant {
@@ -14,10 +16,11 @@ struct participant {
     inline void exit();
 };
 
-void participant::enter() {
+void participant::enter(GCClassBase *p) {
     size_t cur = active.load(std::memory_order_relaxed);
     active.store(cur + 1, std::memory_order_relaxed);
-    if (cur == 0) {
+    std::atomic_signal_fence(std::memory_order_seq_cst);
+    if (cur == 0 && p->needs_fence()) {
         std::atomic_thread_fence(std::memory_order_seq_cst);
     }
 }
