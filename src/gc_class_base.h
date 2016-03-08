@@ -13,8 +13,5 @@ public:
         return active_gc.load(std::memory_order_relaxed);
     }
 
-    template
-    inline
-
     virtual RefList get_roots() = 0;
 };

@@ -1,2 +1,2 @@
 all:
-	g++ -c src/*.cpp -std=c++11
+	g++-5 -c src/*.cpp src/*.s -std=c++11
