@@ -12,7 +12,7 @@ struct participant {
     std::atomic<size_t> active;
     local_config conf;
 
-    inline void enter();
+    inline void enter(GCClassBase *p);
     inline void exit();
 };
 

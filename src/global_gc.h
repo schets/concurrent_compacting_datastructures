@@ -2,9 +2,9 @@
 
 #include <atomic>
 
-#include "gc_base_class.h"
+#include "gc_class_base.h"
 class GlobalGC {
 public:
 
-    void set_read_fence(GCClassBase *p);
+    static void set_read_fence(GCClassBase *p);
 };

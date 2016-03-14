@@ -1,11 +1,14 @@
 #pragma once
 
 #include <atomic>
-#include <stddef.h>
+#include <stdint.h>
 #include "reference.h"
+
+class GlobalGC;
 
 // Base class for the object
 class GCClassBase {
+    std::atomic<uint32_t> depth;
     std::atomic<bool> active_gc;
 
 public:
@@ -14,4 +17,6 @@ public:
     }
 
     virtual RefList get_roots() = 0;
+
+    friend class GlobalGC;
 };
